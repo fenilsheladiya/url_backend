@@ -74,7 +74,7 @@ app.post("/api/short", async (req, res) => {
     }
 
     const newUrl = new Url({ originalUrl, shortUrl });
-    const myUrl = `http://localhost:3000/${shortUrl}`;
+    const myUrl = `url-backend-gamma.vercel.app/${shortUrl}`;
     const qrCodeImg = await QRCode.toDataURL(myUrl);
     await newUrl.save();
 
