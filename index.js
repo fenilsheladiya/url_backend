@@ -14,7 +14,12 @@ import { dirname } from "path";
 // const __dirname = dirname(__filename);
 
 const app = express();
-app.use(cors());
+
+app.use(
+  cors({
+    origin: "https://url-frontend-eta.vercel.app", // Set this to your frontend URL
+  })
+);
 app.use(express.json());
 
 //connection
@@ -28,7 +33,7 @@ const urlSchema = new mongoose.Schema({
   originalUrl: String,
   shortUrl: String,
   clicks: { type: Number, default: 0 },
-  createdAt: { type: Date, default: Date.now, expires: '7d' }
+  createdAt: { type: Date, default: Date.now, expires: "7d" },
 });
 
 const Url = mongoose.model("url", urlSchema);
@@ -74,18 +79,16 @@ app.post("/api/short", async (req, res) => {
     }
 
     const newUrl = new Url({ originalUrl, shortUrl });
-    const myUrl = `url-backend-gamma.vercel.app/${shortUrl}`;
+    const myUrl = `https://url-backend-gamma.vercel.app/${shortUrl}`;
     const qrCodeImg = await QRCode.toDataURL(myUrl);
     await newUrl.save();
 
-    return res
-      .status(200)
-      .json({
-        message: "URL generated",
-        shortUrl: myUrl,
-        qrCodeImg,
-        clicks: newUrl.clicks,
-      });
+    return res.status(200).json({
+      message: "URL generated",
+      shortUrl: myUrl,
+      qrCodeImg,
+      clicks: newUrl.clicks,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "server error" });
